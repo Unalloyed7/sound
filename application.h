@@ -9,5 +9,7 @@ public:
     int start(int argc, char* argv[]);
 
 private:
+    void printHelp() const;
+
     CmdLineArgs2PipelineConverter _converter;
 };

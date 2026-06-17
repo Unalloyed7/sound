@@ -27,6 +27,7 @@ int Application::start(int argc, char* argv[]) {
     Result result = parser.parse(argc, argv);
 
     if (result == Result::noArgs) {
+        printHelp();
         return 0;
     }
 
@@ -55,4 +56,14 @@ int Application::start(int argc, char* argv[]) {
     }
 
     return 0;
+}
+
+void Application::printHelp() const {
+    std::cout
+        << "Usage:\n"
+        << "  sound_processor [-i input.wav] [-o output.wav] "
+        << "[-f filter_name filter_params...]\n\n"
+        << "Examples:\n"
+        << "  sound_processor -i input.wav -o output.wav -f ampl 0.8 -f timestretch 2\n"
+        << "  sound_processor -o output.wav -f generator sin 440 2000 -f ampl 1.1\n";
 }

@@ -1,6 +1,34 @@
 #include "pipeline.h"
 
+#include "waveform.h"
+
+#include <utility>
+
+Pipeline::Pipeline(Pipeline&& other) noexcept
+    : _filters(std::move(other._filters)) {
+    other._filters.clear();
+}
+
+Pipeline& Pipeline::operator=(Pipeline&& other) noexcept {
+    if (this != &other) {
+        clearFilters();
+        _filters = std::move(other._filters);
+        other._filters.clear();
+    }
+
+    return *this;
+}
+
+Pipeline::~Pipeline() {
+    clearFilters();
+}
+
 FilterState Pipeline::apply(Waveform* sound) {
+    Waveform emptySound;
+    if (sound == nullptr) {
+        sound = &emptySound;
+    }
+
     for (IFilter* filter : _filters) {
         if (filter == nullptr) {
             return FilterState::Error;
@@ -24,4 +52,11 @@ size_t Pipeline::getFilterNumbers() const {
 
 IFilter* Pipeline::operator[](size_t i) const {
     return _filters[i];
+}
+
+void Pipeline::clearFilters() {
+    for (IFilter* filter : _filters) {
+        delete filter;
+    }
+    _filters.clear();
 }

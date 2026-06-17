@@ -1,4 +1,5 @@
 .DS_Store
 sound_processor
+sound_processor_tests
 out.wav
 *.wav

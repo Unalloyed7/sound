@@ -6,8 +6,6 @@
 #include <stdexcept>
 #include <vector>
 
-#pragma pack(push, 1)
-
 struct RiffHeader {
     char chunkId[4];
     uint32_t chunkSize;
@@ -29,8 +27,6 @@ struct DataHeader {
     char chunkId[4];
     uint32_t chunkSize;
 };
-
-#pragma pack(pop)
 
 static bool equalId(const char* a, const char* b) {
     return std::memcmp(a, b, 4) == 0;

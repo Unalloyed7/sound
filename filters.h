@@ -8,56 +8,62 @@
 
 class AmplFilter : public IFilter {
 public:
-    explicit AmplFilter(double factor);
+    AmplFilter(double factor);
+    ~AmplFilter() override = default;
     FilterState apply(Waveform& sound) override;
 
-private:
+protected:
     double _factor;
 };
 
 class NormalizeFilter : public IFilter {
 public:
-    explicit NormalizeFilter(double peak = 1.0);
+    NormalizeFilter(double peak = 1.0);
+    ~NormalizeFilter() override = default;
     FilterState apply(Waveform& sound) override;
 
-private:
+protected:
     double _peak;
 };
 
 class SilenceFilter : public IFilter {
 public:
     SilenceFilter(const std::string& unit, double start, double end);
+    ~SilenceFilter() override = default;
     FilterState apply(Waveform& sound) override;
 
-private:
+protected:
     size_t _start;
     size_t _end;
 };
 
 class TimestretchFilter : public IFilter {
 public:
-    explicit TimestretchFilter(double factor);
+    TimestretchFilter(double factor);
+    ~TimestretchFilter() override = default;
     FilterState apply(Waveform& sound) override;
 
-private:
+protected:
     double _factor;
 };
 
 class LowpassFilter : public IFilter {
 public:
-    explicit LowpassFilter(size_t windowSize);
+    LowpassFilter(size_t windowSize);
+    ~LowpassFilter() override = default;
     FilterState apply(Waveform& sound) override;
 
-private:
+protected:
     size_t _windowSize;
 };
 
 class SinGeneratorFilter : public IFilter {
 public:
     SinGeneratorFilter(double frequencyHz, double durationMs);
+    ~SinGeneratorFilter() override = default;
     FilterState apply(Waveform& sound) override;
 
-private:
+protected:
     double _frequencyHz;
     double _durationMs;
 };
@@ -65,9 +71,10 @@ private:
 class AmGeneratorFilter : public IFilter {
 public:
     AmGeneratorFilter(double amplitude, double carrierHz, double modulationHz, double depth, double durationMs);
+    ~AmGeneratorFilter() override = default;
     FilterState apply(Waveform& sound) override;
 
-private:
+protected:
     double _amplitude;
     double _carrierHz;
     double _modulationHz;
@@ -78,9 +85,10 @@ private:
 class FmGeneratorFilter : public IFilter {
 public:
     FmGeneratorFilter(double amplitude, double carrierHz, double modulationHz, double deviationHz, double durationMs);
+    ~FmGeneratorFilter() override = default;
     FilterState apply(Waveform& sound) override;
 
-private:
+protected:
     double _amplitude;
     double _carrierHz;
     double _modulationHz;

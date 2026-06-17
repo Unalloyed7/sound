@@ -7,11 +7,12 @@
 
 class Pipeline {
 public:
-    ~Pipeline() {
-        for (IFilter* filter : _filters) {
-            delete filter;
-        }
-    }
+    Pipeline() = default;
+    Pipeline(const Pipeline&) = delete;
+    Pipeline& operator=(const Pipeline&) = delete;
+    Pipeline(Pipeline&& other) noexcept;
+    Pipeline& operator=(Pipeline&& other) noexcept;
+    ~Pipeline();
 
     FilterState apply(Waveform* sound);
     IFilter* addFilter(IFilter* filter);
@@ -20,4 +21,7 @@ public:
 
 protected:
     std::vector<IFilter*> _filters;
+
+private:
+    void clearFilters();
 };
