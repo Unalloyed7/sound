@@ -36,15 +36,7 @@ static long long parseInt(const std::string& s, const std::string& message) {
     }
 }
 
-static void checkName(const FilterDescriptor& fd, const std::string& expected) {
-    if (fd.name != expected) {
-        throw std::logic_error("wrong filter descriptor name");
-    }
-}
-
 IFilter* createAmplFilter(const FilterDescriptor& fd) {
-    checkName(fd, "ampl");
-
     if (fd.params.size() != 1) {
         throw std::logic_error("ampl filter requires 1 parameter");
     }
@@ -55,8 +47,6 @@ IFilter* createAmplFilter(const FilterDescriptor& fd) {
 }
 
 IFilter* createNormalizeFilter(const FilterDescriptor& fd) {
-    checkName(fd, "normalize");
-
     if (fd.params.size() > 1) {
         throw std::logic_error("normalize filter requires 0 or 1 parameter");
     }
@@ -71,8 +61,6 @@ IFilter* createNormalizeFilter(const FilterDescriptor& fd) {
 }
 
 IFilter* createSilenceFilter(const FilterDescriptor& fd) {
-    checkName(fd, "silence");
-
     if (fd.params.size() != 3) {
         throw std::logic_error("silence filter requires 3 parameters");
     }
@@ -85,8 +73,6 @@ IFilter* createSilenceFilter(const FilterDescriptor& fd) {
 }
 
 IFilter* createTimestretchFilter(const FilterDescriptor& fd) {
-    checkName(fd, "timestretch");
-
     if (fd.params.size() != 1) {
         throw std::logic_error("timestretch filter requires 1 parameter");
     }
@@ -97,8 +83,6 @@ IFilter* createTimestretchFilter(const FilterDescriptor& fd) {
 }
 
 IFilter* createLowpassFilter(const FilterDescriptor& fd) {
-    checkName(fd, "lowpass");
-
     if (fd.params.size() != 1) {
         throw std::logic_error("lowpass filter requires 1 parameter");
     }
@@ -113,8 +97,6 @@ IFilter* createLowpassFilter(const FilterDescriptor& fd) {
 }
 
 IFilter* createGeneratorFilter(const FilterDescriptor& fd) {
-    checkName(fd, "generator");
-
     if (fd.params.empty()) {
         throw std::logic_error("generator requires signal type");
     }

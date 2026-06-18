@@ -11,5 +11,5 @@ class IFilter {
 public:
     virtual ~IFilter() = default;
 
-    virtual FilterState apply(Waveform& sound) = 0;
+    virtual FilterState apply(Waveform* sound) = 0;
 };

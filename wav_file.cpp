@@ -6,13 +6,13 @@
 #include <stdexcept>
 #include <vector>
 
-struct RiffHeader {
+struct __attribute__((packed)) RiffHeader {
     char chunkId[4];
     uint32_t chunkSize;
     char format[4];
 };
 
-struct FmtHeader {
+struct __attribute__((packed)) FmtHeader {
     char chunkId[4];
     uint32_t chunkSize;
     uint16_t audioFormat;
@@ -23,7 +23,7 @@ struct FmtHeader {
     uint16_t bitsPerSample;
 };
 
-struct DataHeader {
+struct __attribute__((packed)) DataHeader {
     char chunkId[4];
     uint32_t chunkSize;
 };

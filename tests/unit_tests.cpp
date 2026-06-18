@@ -67,13 +67,13 @@ TEST_CASE("Amplitude and normalize") {
     sound.samples() = {1000, -2000, 30000};
 
     AmplFilter ampl(2.0);
-    REQUIRE(ampl.apply(sound) == FilterState::Ok);
+    REQUIRE(ampl.apply(&sound) == FilterState::Ok);
     REQUIRE(sound.samples()[0] == 2000);
     REQUIRE(sound.samples()[1] == -4000);
     REQUIRE(sound.samples()[2] == 32767);
 
     NormalizeFilter normalize(1.0);
-    REQUIRE(normalize.apply(sound) == FilterState::Ok);
+    REQUIRE(normalize.apply(&sound) == FilterState::Ok);
     REQUIRE(sound.samples()[2] == 32767);
 }
 
@@ -82,14 +82,14 @@ TEST_CASE("Transform") {
     stretched.samples() = {0, 100};
 
     TimestretchFilter timestretch(2.0);
-    REQUIRE(timestretch.apply(stretched) == FilterState::Ok);
+    REQUIRE(timestretch.apply(&stretched) == FilterState::Ok);
     REQUIRE(stretched.samples() == std::vector<Waveform::sample>{0, 50, 100, 100});
 
     Waveform lowpassed;
     lowpassed.samples() = {0, 30, 60};
 
     LowpassFilter lowpass(3);
-    REQUIRE(lowpass.apply(lowpassed) == FilterState::Ok);
+    REQUIRE(lowpass.apply(&lowpassed) == FilterState::Ok);
     REQUIRE(lowpassed.samples() == std::vector<Waveform::sample>{10, 30, 50});
 }
 
@@ -98,7 +98,8 @@ TEST_CASE("Generator") {
     sound.samples() = {1, 2, 3};
 
     SinGeneratorFilter generator(440.0, 1000.0);
-    REQUIRE(generator.apply(sound) == FilterState::Ok);
+    REQUIRE(generator.apply(nullptr) == FilterState::Ok);
+    REQUIRE(generator.apply(&sound) == FilterState::Ok);
     REQUIRE(sound.samples().size() == 44100);
     REQUIRE(sound.samples()[0] == 0);
 }

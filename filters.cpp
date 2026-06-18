@@ -16,8 +16,12 @@ AmplFilter::AmplFilter(double factor)
     }
 }
 
-FilterState AmplFilter::apply(Waveform& sound) {
-    for (auto& x : sound.samples()) {
+FilterState AmplFilter::apply(Waveform* sound) {
+    if (sound == nullptr) {
+        return FilterState::Error;
+    }
+
+    for (auto& x : sound->samples()) {
         x = clampSample(static_cast<double>(x) * _factor);
     }
     return FilterState::Ok;
@@ -30,13 +34,17 @@ NormalizeFilter::NormalizeFilter(double peak)
     }
 }
 
-FilterState NormalizeFilter::apply(Waveform& sound) {
-    if (sound.empty()) {
+FilterState NormalizeFilter::apply(Waveform* sound) {
+    if (sound == nullptr) {
+        return FilterState::Error;
+    }
+
+    if (sound->empty()) {
         return FilterState::Ok;
     }
 
     int currentPeak = 0;
-    for (auto x : sound.samples()) {
+    for (auto x : sound->samples()) {
         int value = std::abs(static_cast<int>(x));
         currentPeak = std::max(currentPeak, value);
     }
@@ -47,7 +55,7 @@ FilterState NormalizeFilter::apply(Waveform& sound) {
 
     double scale = _peak * 32767.0 / currentPeak;
 
-    for (auto& x : sound.samples()) {
+    for (auto& x : sound->samples()) {
         x = clampSample(static_cast<double>(x) * scale);
     }
 
@@ -72,15 +80,19 @@ SilenceFilter::SilenceFilter(const std::string& unit, double start, double end) 
     }
 }
 
-FilterState SilenceFilter::apply(Waveform& sound) {
+FilterState SilenceFilter::apply(Waveform* sound) {
+    if (sound == nullptr) {
+        return FilterState::Error;
+    }
+
     if (_end <= _start) {
         return FilterState::Ok;
     }
 
     size_t count = _end - _start;
-    size_t pos = std::min(_start, sound.size());
+    size_t pos = std::min(_start, sound->size());
 
-    sound.samples().insert(sound.samples().begin() + pos, count, 0);
+    sound->samples().insert(sound->samples().begin() + pos, count, 0);
 
     return FilterState::Ok;
 }
@@ -92,17 +104,21 @@ TimestretchFilter::TimestretchFilter(double factor)
     }
 }
 
-FilterState TimestretchFilter::apply(Waveform& sound) {
-    if (sound.empty()) {
+FilterState TimestretchFilter::apply(Waveform* sound) {
+    if (sound == nullptr) {
+        return FilterState::Error;
+    }
+
+    if (sound->empty()) {
         return FilterState::Ok;
     }
 
-    std::vector<Waveform::sample> oldSamples = sound.samples();
+    std::vector<Waveform::sample> oldSamples = sound->samples();
     size_t oldSize = oldSamples.size();
     size_t newSize = static_cast<size_t>(std::round(oldSize * _factor));
 
     if (newSize == 0) {
-        sound.clear();
+        sound->clear();
         return FilterState::Ok;
     }
 
@@ -122,7 +138,7 @@ FilterState TimestretchFilter::apply(Waveform& sound) {
         newSamples[i] = clampSample(value);
     }
 
-    sound.samples() = std::move(newSamples);
+    sound->samples() = std::move(newSamples);
     return FilterState::Ok;
 }
 
@@ -133,12 +149,16 @@ LowpassFilter::LowpassFilter(size_t windowSize)
     }
 }
 
-FilterState LowpassFilter::apply(Waveform& sound) {
-    if (sound.empty() || _windowSize == 1) {
+FilterState LowpassFilter::apply(Waveform* sound) {
+    if (sound == nullptr) {
+        return FilterState::Error;
+    }
+
+    if (sound->empty() || _windowSize == 1) {
         return FilterState::Ok;
     }
 
-    const auto& samples = sound.samples();
+    const auto& samples = sound->samples();
     size_t n = samples.size();
     size_t half = _windowSize / 2;
 
@@ -180,7 +200,7 @@ FilterState LowpassFilter::apply(Waveform& sound) {
         result[i] = clampSample(value);
     }
 
-    sound.samples() = std::move(result);
+    sound->samples() = std::move(result);
     return FilterState::Ok;
 }
 
@@ -195,7 +215,11 @@ SinGeneratorFilter::SinGeneratorFilter(double frequencyHz, double durationMs)
     }
 }
 
-FilterState SinGeneratorFilter::apply(Waveform& sound) {
+FilterState SinGeneratorFilter::apply(Waveform* sound) {
+    if (sound == nullptr) {
+        return FilterState::Ok;
+    }
+
     size_t n = Waveform::msToSamples(_durationMs);
     std::vector<Waveform::sample> result(n);
 
@@ -205,7 +229,7 @@ FilterState SinGeneratorFilter::apply(Waveform& sound) {
         result[i] = clampSample(value);
     }
 
-    sound.samples() = std::move(result);
+    sound->samples() = std::move(result);
     return FilterState::Ok;
 }
 
@@ -232,7 +256,11 @@ AmGeneratorFilter::AmGeneratorFilter(double amplitude, double carrierHz, double 
     }
 }
 
-FilterState AmGeneratorFilter::apply(Waveform& sound) {
+FilterState AmGeneratorFilter::apply(Waveform* sound) {
+    if (sound == nullptr) {
+        return FilterState::Ok;
+    }
+
     size_t n = Waveform::msToSamples(_durationMs);
     std::vector<Waveform::sample> result(n);
 
@@ -244,7 +272,7 @@ FilterState AmGeneratorFilter::apply(Waveform& sound) {
         result[i] = clampSample(value);
     }
 
-    sound.samples() = std::move(result);
+    sound->samples() = std::move(result);
     return FilterState::Ok;
 }
 
@@ -271,7 +299,11 @@ FmGeneratorFilter::FmGeneratorFilter(double amplitude, double carrierHz, double 
     }
 }
 
-FilterState FmGeneratorFilter::apply(Waveform& sound) {
+FilterState FmGeneratorFilter::apply(Waveform* sound) {
+    if (sound == nullptr) {
+        return FilterState::Ok;
+    }
+
     size_t n = Waveform::msToSamples(_durationMs);
     std::vector<Waveform::sample> result(n);
 
@@ -282,6 +314,6 @@ FilterState FmGeneratorFilter::apply(Waveform& sound) {
         result[i] = clampSample(value);
     }
 
-    sound.samples() = std::move(result);
+    sound->samples() = std::move(result);
     return FilterState::Ok;
 }

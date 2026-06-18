@@ -1,7 +1,5 @@
 #include "pipeline.h"
 
-#include "waveform.h"
-
 #include <utility>
 
 Pipeline::Pipeline(Pipeline&& other) noexcept
@@ -24,16 +22,11 @@ Pipeline::~Pipeline() {
 }
 
 FilterState Pipeline::apply(Waveform* sound) {
-    Waveform emptySound;
-    if (sound == nullptr) {
-        sound = &emptySound;
-    }
-
     for (IFilter* filter : _filters) {
         if (filter == nullptr) {
             return FilterState::Error;
         }
-        FilterState state = filter->apply(*sound);
+        FilterState state = filter->apply(sound);
         if (state != FilterState::Ok) {
             return state;
         }
