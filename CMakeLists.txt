@@ -1,4 +1,6 @@
 set(SOUND_PROCESSOR_SOURCES
+    ampl_filter.cpp
+    ampl_filter.h
     application.cpp
     application.h
     args_parser.cpp
@@ -11,10 +13,19 @@ set(SOUND_PROCESSOR_SOURCES
     filter_descriptor.h
     filter_producers.cpp
     filter_producers.h
-    filters.cpp
     filters.h
+    generator_filter.cpp
+    generator_filter.h
+    lowpass_filter.cpp
+    lowpass_filter.h
+    normalize_filter.cpp
+    normalize_filter.h
     pipeline.cpp
     pipeline.h
+    silence_filter.cpp
+    silence_filter.h
+    timestretch_filter.cpp
+    timestretch_filter.h
     wav_file.cpp
     wav_file.h
     waveform.cpp
